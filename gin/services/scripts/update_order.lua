@@ -1,13 +1,13 @@
 local airport = KEYS[1]
-local cid = ARGV[1]
+local callsign = ARGV[1]
 local before = ARGV[2]
 
 if before == "-1" then
-    local target_score = redis.call("ZSCORE", airport, cid)
+    local target_score = redis.call("ZSCORE", airport, callsign)
     local max_score = math.floor(target_score)+1
     local last_element = redis.call("ZRANGE", airport, "("..max_score, target_score, "BYSCORE", "WITHSCORES", "REV", "LIMIT", 0, 1)
     if #last_element == 2 then
-        redis.call("ZADD", airport, tonumber(last_element[2])+0.000001, cid)
+        redis.call("ZADD", airport, tonumber(last_element[2])+0.000001, callsign)
     end
     return
 end
@@ -28,4 +28,4 @@ for i = 1, num_arg do
     redis.call("ZADD", airport, target_score, to_change[i])
 end
 
-redis.call("ZADD", airport, start_score, cid)
+redis.call("ZADD", airport, start_score, callsign)

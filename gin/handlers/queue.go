@@ -8,8 +8,8 @@ import (
 )
 
 type UpdateStatusRequest struct {
-	Cid    string `json:"cid"`
-	Status int    `json:"status"`
+	Callsign string `json:"callsign"`
+	Status   int    `json:"status"`
 }
 
 func UpdateStatus(c *gin.Context) (interface{}, error) {
@@ -33,7 +33,7 @@ func UpdateStatus(c *gin.Context) (interface{}, error) {
 		}
 	}
 
-	err := services.UpdateStatus(airport, req.Cid, req.Status)
+	err := services.UpdateStatus(airport, req.Callsign, req.Status)
 	if err != nil {
 		return nil, errors.ApiError{
 			Status:           http.StatusInternalServerError,
@@ -46,8 +46,8 @@ func UpdateStatus(c *gin.Context) (interface{}, error) {
 }
 
 type UpdateOrderRequest struct {
-	Cid    string `json:"cid"`
-	Before string `json:"before"`
+	Callsign string `json:"callsign"`
+	Before   string `json:"before"`
 }
 
 func UpdateOrderHandler(c *gin.Context) (interface{}, error) {
@@ -70,7 +70,7 @@ func UpdateOrderHandler(c *gin.Context) (interface{}, error) {
 		}
 	}
 
-	err := services.UpdateOrder(airport, req.Cid, req.Before)
+	err := services.UpdateOrder(airport, req.Callsign, req.Before)
 	if err != nil {
 		return nil, errors.ApiError{
 			Status:           http.StatusInternalServerError,

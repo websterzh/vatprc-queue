@@ -11,15 +11,15 @@ import (
 )
 
 type QueueExtra struct {
-	Callsign  string `json:"callsign,omitempty"`
+	Cid       string `json:"cid,omitempty"`
 	Departure string `json:"departure,omitempty"`
 	Arrival   string `json:"arrival,omitempty"`
 }
 
 type QueueResult struct {
-	Status int         `json:"status"`
-	Cid    interface{} `json:"cid"`
-	Extra  *QueueExtra `json:"extra"`
+	Status   int         `json:"status"`
+	Callsign interface{} `json:"callsign"`
+	Extra    *QueueExtra `json:"extra"`
 }
 
 func GetQueueResult(airport string, withExtra bool) []QueueResult {
@@ -34,7 +34,7 @@ func GetQueueResult(airport string, withExtra bool) []QueueResult {
 			vatsimPilot, ok := VatsimPilots[fmt.Sprint(aircraft.Member)]
 			if ok {
 				extra = &QueueExtra{
-					Callsign:  vatsimPilot.Callsign,
+					Cid:       fmt.Sprint(vatsimPilot.Cid),
 					Departure: vatsimPilot.FlightPlan.Departure,
 					Arrival:   vatsimPilot.FlightPlan.Arrival,
 				}
@@ -42,18 +42,18 @@ func GetQueueResult(airport string, withExtra bool) []QueueResult {
 
 		}
 		result[i] = QueueResult{
-			Status: int(math.Floor(aircraft.Score)),
-			Cid:    aircraft.Member,
-			Extra:  extra,
+			Status:   int(math.Floor(aircraft.Score)),
+			Callsign: aircraft.Member,
+			Extra:    extra,
 		}
 	}
 	return result
 }
 
-func UpdateOrder(airport string, cid string, beforeCid string) error {
-	log.Println("reorder ", cid, " from ", airport)
-	updateOrderScript.Run(context.Background(), redis.Client, []string{airport}, cid, beforeCid)
-	redis.Client.ZAdd(context.Background(), "_live_check", goredis.Z{Score: 0, Member: fmt.Sprint(cid, ":", airport)})
+func UpdateOrder(airport string, callsign string, beforeCallsign string) error {
+	log.Println("reorder ", callsign, " from ", airport)
+	updateOrderScript.Run(context.Background(), redis.Client, []string{airport}, callsign, beforeCallsign)
+	redis.Client.ZAdd(context.Background(), "_live_check", goredis.Z{Score: 0, Member: fmt.Sprint(callsign, ":", airport)})
 	return nil
 }
 
@@ -61,10 +61,10 @@ func UpdateOrder(airport string, cid string, beforeCid string) error {
 var updateOrderScriptSrc string
 var updateOrderScript = goredis.NewScript(updateOrderScriptSrc)
 
-func UpdateStatus(airport string, cid string, newStatus int) error {
-	log.Println("update ", cid, " from ", airport)
-	updateStatusScript.Run(context.Background(), redis.Client, []string{airport}, cid, newStatus)
-	redis.Client.ZAdd(context.Background(), "_live_check", goredis.Z{Score: 0, Member: fmt.Sprint(cid, ":", airport)})
+func UpdateStatus(airport string, callsign string, newStatus int) error {
+	log.Println("update", callsign, "from", airport)
+	updateStatusScript.Run(context.Background(), redis.Client, []string{airport}, callsign, newStatus)
+	redis.Client.ZAdd(context.Background(), "_live_check", goredis.Z{Score: 0, Member: fmt.Sprint(callsign, ":", airport)})
 	return nil
 }
 
@@ -72,7 +72,7 @@ func UpdateStatus(airport string, cid string, newStatus int) error {
 var updateStatusScriptSrc string
 var updateStatusScript = goredis.NewScript(updateStatusScriptSrc)
 
-func RemoveFromQueue(airport string, cid string) {
-	log.Println("removing", cid, "from", airport)
-	redis.Client.ZRem(context.Background(), airport, cid)
+func RemoveFromQueue(airport string, callsign string) {
+	log.Println("removing", callsign, "from", airport)
+	redis.Client.ZRem(context.Background(), airport, callsign)
 }

@@ -65,7 +65,7 @@ func FetchOnlineDataFromVatsim() (*VatsimResponse, error) {
 
 	VatsimPilots = make(map[string]VatsimPilot)
 	for _, pilot := range result.Pilots {
-		VatsimPilots[fmt.Sprint(pilot.Cid)] = pilot
+		VatsimPilots[fmt.Sprint(pilot.Callsign)] = pilot
 	}
 
 	log.Println("fetched VATSIM data")
@@ -85,7 +85,7 @@ func AddOnlineDataToRedis(data *VatsimResponse) error {
 		if pilot.FlightPlan.Departure == "" {
 			continue
 		}
-		toAdd = append(toAdd, -1, fmt.Sprint(pilot.Cid, ":", pilot.FlightPlan.Departure))
+		toAdd = append(toAdd, -1, fmt.Sprint(pilot.Callsign, ":", pilot.FlightPlan.Departure))
 	}
 	importOnlineDataScript.Run(context.Background(), redis.Client, []string{}, toAdd...)
 	return nil
