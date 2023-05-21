@@ -7,6 +7,7 @@ import (
 	goredis "github.com/redis/go-redis/v9"
 	"log"
 	"math"
+	"vatprc-queue/config"
 	"vatprc-queue/redis"
 )
 
@@ -46,6 +47,12 @@ func GetQueueResult(airport string, withExtra bool) []QueueResult {
 			Callsign: aircraft.Member,
 			Extra:    extra,
 		}
+	}
+
+	if config.File.Section("app").Key("debug").MustBool(false) && len(result) == 0 {
+		result = append(result, QueueResult{Status: 1, Callsign: "DEBUG1", Extra: &QueueExtra{Cid: "1", Departure: "TEST", Arrival: "TEST"}})
+		result = append(result, QueueResult{Status: 1, Callsign: "DEBUG2", Extra: &QueueExtra{Cid: "2", Departure: "TEST", Arrival: "TEST"}})
+		result = append(result, QueueResult{Status: 1, Callsign: "DEBUG3", Extra: &QueueExtra{Cid: "3", Departure: "TEST", Arrival: "TEST"}})
 	}
 	return result
 }
