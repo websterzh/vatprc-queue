@@ -13,6 +13,7 @@ func InitRouter() *gin.Engine {
 	v1 := router.Group("v1")
 	{
 		v1.GET("/hello", errors.ErrorWrapper(handlers.HelloWorld))
+		v1.GET("/queue", errors.ErrorWrapper(handlers.GetMultipleQueuesHandler))
 		airport := v1.Group("/:airport")
 		{
 			airport.PATCH("/status", errors.ErrorWrapper(handlers.UpdateStatus))

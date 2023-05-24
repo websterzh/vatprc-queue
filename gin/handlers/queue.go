@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 	"vatprc-queue/gin/errors"
 	"vatprc-queue/gin/services"
 )
@@ -93,4 +94,30 @@ func GetQueueHandler(c *gin.Context) (interface{}, error) {
 		}
 	}
 	return services.GetQueueResult(airport, true), nil
+}
+
+func GetMultipleQueuesHandler(c *gin.Context) (interface{}, error) {
+	param, ok := c.Params.Get("airports")
+	if !ok {
+		return nil, errors.ApiError{
+			Status:           http.StatusBadRequest,
+			Code:             http.StatusBadRequest,
+			ShowInProduction: true,
+			Message:          "airports parameter is required",
+		}
+	}
+	airports := strings.Split(param, ",")
+	if len(airports) < 1 || len(airports) > 10 {
+		return nil, errors.ApiError{
+			Status:           http.StatusBadRequest,
+			Code:             http.StatusBadRequest,
+			ShowInProduction: true,
+			Message:          "enter 1 to 10 airports",
+		}
+	}
+	result := make(map[string][]services.QueueResult)
+	for _, airport := range airports {
+		result[airport] = services.GetQueueResult(airport, true)
+	}
+	return result, nil
 }
