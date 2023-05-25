@@ -4,3 +4,4 @@ vatprc-queue
 *.db
 *.csv
 *.sql
+views

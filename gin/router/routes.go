@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"vatprc-queue/gin/errors"
 	"vatprc-queue/gin/handlers"
@@ -10,6 +11,7 @@ func InitRouter() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger())
 
+	router.Use(static.Serve("/", static.LocalFile("./views", true)))
 	v1 := router.Group("v1")
 	{
 		v1.GET("/hello", errors.ErrorWrapper(handlers.HelloWorld))
