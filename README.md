@@ -1,4 +1,7 @@
 # VATPRC QueueMaster
+![GitHub](https://img.shields.io/github/license/websterzh/vatprc-queue)
+![GitHub Release](https://img.shields.io/github/v/release/websterzh/vatprc-queue?display_name=tag&include_prereleases)
+
 ## What
 VATPRC QueueMaster is aiming to provide VATPRC airport controllers with a reliable source to manage their aircraft status and thereafter to **queue** their aircrafts, especially in an extremely busy online event. This repository only stores code for server-side and browser-side. For Euroscope plug-in, see [Ericple/VATPRC-UniSequence](https://github.com/Ericple/VATPRC-UniSequence).
 
