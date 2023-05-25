@@ -88,7 +88,7 @@ function createWebsocket() {
   socket.value.onmessage = (message) => {
     data.value = JSON.parse(message.data);
   };
-  socket.value.onclose = (e) => {
+  socket.value.onerror = (e) => {
     if (socketReconnectTimeSeconds.value === -1 || e.code !== 1006) {
       return;
     }
@@ -100,6 +100,7 @@ function createWebsocket() {
       createWebsocket();
     }, socketReconnectTimeSeconds.value * 1000);
   };
+  socket.value.onclose = socket.value.onerror;
 }
 
 async function refreshList() {
