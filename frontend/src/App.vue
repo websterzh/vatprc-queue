@@ -6,7 +6,7 @@
       </div>
       <div class="right">
         <a-input-group compact style="width: 10rem">
-          <a-input v-model:value="newAirport" placeholder="Airport ICAO" style="width: 7rem" />
+          <a-input v-model:value="newAirport" @change="() => { newAirport = newAirport.toUpperCase() }" placeholder="Airport ICAO" style="width: 7rem" />
           <a-button type="primary" @click="addList"><plus-outlined /></a-button>
         </a-input-group>
       </div>
