@@ -68,7 +68,7 @@ import { message } from 'ant-design-vue';
 const columns = [
   { title: 'Sequence', type: 'sequence', align: "center" },
   { title: 'Callsign', dataIndex: 'callsign', align: "center" },
-  { title: 'Destination', dataIndex: ['extra', 'destination'], align: "center" },
+  { title: 'Destination', dataIndex: ['extra', 'arrival'], align: "center" },
   { title: 'Status', dataIndex: 'status', align: "center" },
 ];
 
