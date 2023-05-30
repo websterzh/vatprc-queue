@@ -16,6 +16,11 @@ func InitRouter() *gin.Engine {
 	{
 		v1.GET("/hello", errors.ErrorWrapper(handlers.HelloWorld))
 		v1.GET("/queue", errors.ErrorWrapper(handlers.GetMultipleQueuesHandler))
+		token := v1.Group("/token")
+		{
+			token.POST("", errors.ErrorWrapper(handlers.HelloWorld))
+			token.DELETE("/:token", errors.ErrorWrapper(handlers.HelloWorld))
+		}
 		airport := v1.Group("/:airport")
 		{
 			airport.PATCH("/status", errors.ErrorWrapper(handlers.UpdateStatus))
