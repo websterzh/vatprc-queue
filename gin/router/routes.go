@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"vatprc-queue/gin/errors"
 	"vatprc-queue/gin/handlers"
+	"vatprc-queue/gin/middlewares"
 )
 
 func InitRouter() *gin.Engine {
@@ -18,13 +19,18 @@ func InitRouter() *gin.Engine {
 		v1.GET("/queue", errors.ErrorWrapper(handlers.GetMultipleQueuesHandler))
 		token := v1.Group("/token")
 		{
-			token.POST("", errors.ErrorWrapper(handlers.HelloWorld))
-			token.DELETE("/:token", errors.ErrorWrapper(handlers.HelloWorld))
+			token.Use(middlewares.AtcCenterAuth())
+			token.POST("", errors.ErrorWrapper(handlers.CreateToken))
+			token.DELETE("/:token", errors.ErrorWrapper(handlers.DeleteToken))
 		}
 		airport := v1.Group("/:airport")
 		{
-			airport.PATCH("/status", errors.ErrorWrapper(handlers.UpdateStatus))
-			airport.PATCH("/order", errors.ErrorWrapper(handlers.UpdateOrderHandler))
+			protected := airport.Group("")
+			protected.Use(middlewares.TokenAuth())
+			{
+				protected.PATCH("/status", errors.ErrorWrapper(handlers.UpdateStatus))
+				protected.PATCH("/order", errors.ErrorWrapper(handlers.UpdateOrderHandler))
+			}
 			airport.GET("/queue", errors.ErrorWrapper(handlers.GetQueueHandler))
 			airport.GET("/ws", handlers.NewWSConnection)
 		}
