@@ -31,5 +31,5 @@ func HasToken(token string, airport string) bool {
 }
 
 func getTokenKey(token string) string {
-	return fmt.Sprint("token_", token)
+	return fmt.Sprint("token_", strings.ToLower(token))
 }
