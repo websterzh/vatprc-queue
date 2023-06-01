@@ -34,7 +34,7 @@ const newAirport = ref("");
 
 const searchParams = new URLSearchParams(window.location.search);
 const airportsParams = searchParams.get('airports');
-if (airportsParams !== null) {
+if (airportsParams !== null && airportsParams.length > 0) {
   airportList.value = airportsParams.split(',');
 }
 
@@ -60,6 +60,9 @@ function addList() {
 function updateHref() {
   const href = new URL(window.location.href);
   href.searchParams.set('airports', airportList.value.join(','));
+  if (airportList.value.join(',').length === 0) {
+    href.searchParams.delete('airports');
+  }
   window.history.replaceState(null,document.title, href.toString());
 }
 
