@@ -20,4 +20,17 @@ export default defineConfig({
       autoInstall: true,
     })
   ],
+  server: {
+    proxy: {
+      '^/v1/.*/ws': {
+        target: 'wss://q.vatprc.net',
+        changeOrigin: true,
+        ws: true,
+      },
+      '^/v1/.*': {
+        target: 'https://q.vatprc.net',
+        changeOrigin: true,
+      },
+    },
+  },
 })

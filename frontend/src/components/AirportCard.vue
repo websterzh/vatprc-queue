@@ -10,11 +10,11 @@
     <template #extra>
       <a-space>
         <a-tag
-          v-if="socket && socket.readyState === 1"
+          v-if="socketStatus === 1"
           color="green"
         >ONLINE</a-tag>
         <a-tag
-          v-else-if="socket && socket.readyState === 0"
+          v-else-if="socketStatus === 0"
           color="yellow"
         >CONNECTING</a-tag>
         <a-tag
@@ -76,19 +76,25 @@ const data = ref([]);
 const props = defineProps(['airport']);
 const { airport } = toRefs(props);
 const socket = ref(null);
-const socketReconnectTimeSeconds = ref(-1);
+const socketReconnectTimeSeconds = ref(5);
 const socketReconnectTimer = ref(null);
 const loading = ref(false);
+const socketStatus = ref(0);
 const emit = defineEmits(['close']);
 
 function createWebsocket() {
+  socketStatus.value = 0;
   const wsUrlBase = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}`;
   socket.value = new WebSocket(`${wsUrlBase}/v1/${airport.value}/ws`);
   refreshList();
+  socket.value.onopen = () => {
+    socketStatus.value = 1;
+  }
   socket.value.onmessage = (message) => {
     data.value = JSON.parse(message.data);
   };
   socket.value.onerror = (e) => {
+    socketStatus.value = -1;
     if (socketReconnectTimeSeconds.value === -1 || e.code !== 1006) {
       return;
     }
