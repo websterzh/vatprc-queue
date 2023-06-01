@@ -28,8 +28,15 @@ import { ref } from 'vue';
 const airportList = ref([]);
 const newAirport = ref("");
 
+const searchParams = new URLSearchParams(window.location.search);
+const airportsParams = searchParams.get('airports');
+if (airportsParams !== null) {
+  airportList.value = airportsParams.split(',');
+}
+
 function closeList(airport) {
   airportList.value = airportList.value.filter(elem => elem !== airport);
+  updateHref();
 } 
 
 function addList() {
@@ -38,6 +45,14 @@ function addList() {
   }
   airportList.value.push(newAirport.value);
   newAirport.value = "";
+
+  updateHref();
+}
+
+function updateHref() {
+  const href = new URL(window.location.href);
+  href.searchParams.set('airports', airportList.value.join(','));
+  window.history.replaceState(null,document.title, href.toString());
 }
 
 
