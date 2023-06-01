@@ -23,6 +23,7 @@
 
 <script setup>
 import { PlusOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
 import { ref } from 'vue';
 
 const airportList = ref([]);
@@ -41,6 +42,10 @@ function closeList(airport) {
 
 function addList() {
   if (newAirport.value.length === 0) {
+    return;
+  }
+  if (airportList.value.indexOf(newAirport.value) !== -1) {
+    message.error(`Airport ${newAirport.value} has already existed.`)
     return;
   }
   airportList.value.push(newAirport.value);
