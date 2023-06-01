@@ -14,8 +14,11 @@
     <a-layout-content :style="contentStyle">
       <div style="display: flex; flex-direction: vertical; justify-content: center; height: 100%;">
         <AirportCard v-for="airport of airportList" @close="closeList" :airport="airport" />
-        <a-result v-if="airportList.length === 0" status="404" title="There's nothing here." sub-title="You can add an airport queue on the top right.">
-      </a-result>
+        <a-result v-if="airportList.length === 0" title="There's nothing here." sub-title="You can add an airport queue on the top right.">
+          <template #icon>
+            <img src="/add_airport_pic.svg" style="max-width: 60vw;" />
+          </template>
+        </a-result>
       </div>
     </a-layout-content>
   </a-layout>
