@@ -30,6 +30,7 @@ func InitRouter() *gin.Engine {
 			{
 				protected.PATCH("/status", errors.ErrorWrapper(handlers.UpdateStatus))
 				protected.PATCH("/order", errors.ErrorWrapper(handlers.UpdateOrderHandler))
+				protected.DELETE("/status/:callsign", errors.ErrorWrapper(handlers.DeleteStatus))
 			}
 			airport.GET("/queue", errors.ErrorWrapper(handlers.GetQueueHandler))
 			airport.GET("/ws", handlers.NewWSConnection)

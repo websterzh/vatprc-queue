@@ -121,3 +121,28 @@ func GetMultipleQueuesHandler(c *gin.Context) (interface{}, error) {
 	}
 	return result, nil
 }
+
+func DeleteStatus(c *gin.Context) (interface{}, error) {
+	airport, ok := c.Params.Get("airport")
+	if !ok {
+		return nil, errors.ApiError{
+			Status:           http.StatusBadRequest,
+			Code:             http.StatusBadRequest,
+			ShowInProduction: true,
+			Message:          "airport parameter is required",
+		}
+	}
+
+	callsign, ok := c.Params.Get("callsign")
+	if !ok {
+		return nil, errors.ApiError{
+			Status:           http.StatusBadRequest,
+			Code:             http.StatusBadRequest,
+			ShowInProduction: true,
+			Message:          "callsign parameter is required",
+		}
+	}
+
+	services.RemoveFromQueue(airport, callsign)
+	return services.GetQueueResult(airport, true), nil
+}
